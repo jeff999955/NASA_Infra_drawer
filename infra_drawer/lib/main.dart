@@ -73,11 +73,11 @@ class _HomePageState extends State<HomePage> {
       if (response.statusCode == 200) {
         // ignore: avoid_print
         final json = jsonDecode(response.body) as Map<String, dynamic>;
-        widget.graph.clearGraph();
-        var edges = json['edge']; // TODO: type casting would fail
+        widget.graph.clearGraph(); // TODO: this line won't work
+        var edges = json['edges']; // TODO: type casting would fail
         for (var edge in edges) {
           widget.graph.addEdge(Node.Id(edge['from']), Node.Id(edge['to']),
-              paint: Paint()..color = Colors.red);
+              paint: Paint()..color = Colors.black);
         }
 
         print(widget.graph.nodes);
