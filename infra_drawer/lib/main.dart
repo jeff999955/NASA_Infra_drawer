@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:graphview/GraphView.dart';
+import 'switch_graph.dart';
 
 void main() {
   runApp(const DrawerApp());
@@ -20,15 +22,13 @@ class DrawerApp extends StatelessWidget {
       ]
     };
 
-    Graph graph = Graph()..isTree = true;
+    SwitchGraph graph = SwitchGraph()..isTree = true;
     var edges = json['edge'] as List<Map<String, String>>;
     for (var edge in edges) {
       graph.addEdge(Node.Id(edge['from']), Node.Id(edge['to']),
           paint: Paint()..color = Colors.red);
     }
     var algorithm = FruchtermanReingoldAlgorithm();
-
-    
 
     return MaterialApp(
       title: 'Flutter Demo',
@@ -41,7 +41,7 @@ class DrawerApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final Graph graph;
+  final SwitchGraph graph;
   final Algorithm algorithm;
   final Paint? paint;
 
@@ -56,21 +56,41 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const bool animated = true;
-  int _counter = 1;
-  void _updateGraph() {
+  final int _counter = 1;
+  void _updateGraph(http.Response response) {
     setState(() {
-      String postfix = _counter == 1
-          ? '-st'
-          : _counter == 2
-              ? '-nd'
-              : _counter == 3
-                  ? '-rd'
-                  : '-th';
-      // ignore: avoid_print
-      print("Added $_counter$postfix node.");
-      widget.graph.addNode(Node.Id('$_counter$postfix node'));
-      _counter++;
+      // String postfix = _counter == 1
+      //     ? '-st'
+      //     : _counter == 2
+      //         ? '-nd'
+      //         : _counter == 3
+      //             ? '-rd'
+      //             : '-th';
+      // // ignore: avoid_print
+      // print("Added $_counter$postfix node.");
+      // widget.graph.addNode(Node.Id('$_counter$postfix node'));
+      // _counter++;
+      if (response.statusCode == 200) {
+        // ignore: avoid_print
+        final json = jsonDecode(response.body) as Map<String, dynamic>;
+        widget.graph.clearGraph();
+        var edges = json['edge']; // TODO: type casting would fail
+        for (var edge in edges) {
+          widget.graph.addEdge(Node.Id(edge['from']), Node.Id(edge['to']),
+              paint: Paint()..color = Colors.red);
+        }
+
+        print(widget.graph.nodes);
+      } else {
+        // ignore: avoid_print
+        print('error: ${response.statusCode}');
+      }
     });
+    return;
+  }
+
+  Future<http.Response> getGraph() async {
+    return await http.get(Uri.parse('http://127.0.0.1:5920/json'));
   }
 
   @override
@@ -81,7 +101,10 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: _updateGraph,
+            onPressed: () async {
+              var responde = await getGraph();
+              _updateGraph(responde);
+            },
           ),
         ],
       ),
