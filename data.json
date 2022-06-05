@@ -1,0 +1,6 @@
+{
+    "edge": [
+        {"from": "core", "to": "edge"},
+        {"from": "edge", "to": "A03"}
+    ]
+}
