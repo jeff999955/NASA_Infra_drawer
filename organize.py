@@ -108,8 +108,6 @@ def main():
             if mapped_name not in name_mapping:
                 name_mapping[mapped_name] = get_name_wopo(orig_name)
             edges[switch.key_name].add(mapped_name)
-    import sys
-    # print(edges, file=sys.stderr)
 
     sorted_mapping = OrderedDict(sorted(name_mapping.items(), key=lambda t: t[0]))
     edges = {k: list(v) for k, v in edges.items()}

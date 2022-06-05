@@ -56,24 +56,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const bool animated = true;
-  final int _counter = 1;
   void _updateGraph(http.Response response) {
     setState(() {
-      // String postfix = _counter == 1
-      //     ? '-st'
-      //     : _counter == 2
-      //         ? '-nd'
-      //         : _counter == 3
-      //             ? '-rd'
-      //             : '-th';
-      // // ignore: avoid_print
-      // print("Added $_counter$postfix node.");
-      // widget.graph.addNode(Node.Id('$_counter$postfix node'));
-      // _counter++;
       if (response.statusCode == 200) {
         // ignore: avoid_print
         final json = jsonDecode(response.body) as Map<String, dynamic>;
-        widget.graph.clearGraph(); // TODO: this line won't work
+        print(json);
+        var oldNodes = [...widget.graph.nodes];
+        for (var node in oldNodes) {
+          widget.graph.removeNode(node);
+        }
+
         var edges = json['edges']; // TODO: type casting would fail
         for (var edge in edges) {
           widget.graph.addEdge(Node.Id(edge['from']), Node.Id(edge['to']),
