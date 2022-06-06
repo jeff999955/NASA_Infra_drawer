@@ -21,7 +21,7 @@ class DrawerApp extends StatelessWidget {
       ]
     };
 
-    SwitchGraph graph = SwitchGraph()..isTree = true;
+    Graph graph = Graph()..isTree = true;
     var edges = json['edge'] as List<Map<String, String>>;
     for (var edge in edges) {
       graph.addEdge(Node.Id(edge['from']), Node.Id(edge['to']),
@@ -40,7 +40,7 @@ class DrawerApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final SwitchGraph graph;
+  final Graph graph;
   final Algorithm algorithm;
   final Paint? paint;
 
