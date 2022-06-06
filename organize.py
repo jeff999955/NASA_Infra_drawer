@@ -116,8 +116,10 @@ def main():
     sorted_edges = [] 
     for src in adjacency_list:
         for dst in adjacency_list[src]:
-            if get_level(src) < get_level(dst) and get_level(dst) < 4:
+            if get_level(src) < get_level(dst):
                 sorted_edges.append({"from": src, "to": dst})
+
+    sorted_edges.sort(key = lambda t: (get_level(t["from"]), get_level(t["to"]), t["from"], t["to"]))
 
     with open("name_mapping.json", "w") as f:
         print(json.dumps(sorted_mapping, indent=4), file=f)

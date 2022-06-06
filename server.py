@@ -17,6 +17,13 @@ def ReturnJSON():
 
         return jsonify(data)
 
+@app.route("/name", methods=["GET"])
+def ReturnName():
+    if request.method == "GET":
+        with open("name_mapping.json") as json_file:
+            data = json.load(json_file)
+
+        return jsonify(data)
 
 
 if __name__ == "__main__":

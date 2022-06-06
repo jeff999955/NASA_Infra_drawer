@@ -27,8 +27,12 @@ class DrawerApp extends StatelessWidget {
       graph.addEdge(Node.Id(edge['from']), Node.Id(edge['to']),
           paint: Paint()..color = Colors.red);
     }
-    var algorithm = FruchtermanReingoldAlgorithm();
 
+    var builder = SugiyamaConfiguration()
+      ..nodeSeparation = (15)
+      ..levelSeparation = (100)
+      ..orientation = SugiyamaConfiguration.ORIENTATION_TOP_BOTTOM;
+    var algorithm = SugiyamaAlgorithm(builder);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -55,9 +59,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static const bool animated = true;
-  void _updateGraph(http.Response response) {
+  Map<String, dynamic>? name_mapping;
+  void _updateGraph(http.Response response, http.Response name_response) {
     setState(() {
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && name_response.statusCode == 200) {
         // ignore: avoid_print
         final json = jsonDecode(response.body) as Map<String, dynamic>;
         print(json);
@@ -71,8 +76,8 @@ class _HomePageState extends State<HomePage> {
           widget.graph.addEdge(Node.Id(edge['from']), Node.Id(edge['to']),
               paint: Paint()..color = Colors.black);
         }
-
         print(widget.graph.nodes);
+        name_mapping = jsonDecode(name_response.body) as Map<String, dynamic>;
       } else {
         // ignore: avoid_print
         print('error: ${response.statusCode}');
@@ -85,6 +90,10 @@ class _HomePageState extends State<HomePage> {
     return await http.get(Uri.parse('http://127.0.0.1:5920/json'));
   }
 
+  Future<http.Response> getNameMapping() async {
+    return await http.get(Uri.parse('http://127.0.0.1:5920/name'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +104,8 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.refresh),
             onPressed: () async {
               var responde = await getGraph();
-              _updateGraph(responde);
+              var namae_reponde = await getNameMapping();
+              _updateGraph(responde, namae_reponde);
             },
           ),
         ],
@@ -108,8 +118,6 @@ class _HomePageState extends State<HomePage> {
         child: GraphView(
           graph: widget.graph,
           algorithm: widget.algorithm,
-          // TODO: check if paint can be null
-          // paint: widget?.paint,
           animated: animated,
           builder: (Node node) => createNode(node.key?.value),
         ),
@@ -117,8 +125,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget createNode(String? str) {
-    String title = str?.toString() ?? "Unknown Switch";
+  Widget createNode(String str) {
+    String title = name_mapping?[str] ?? "Unknown Switch";
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
