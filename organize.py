@@ -114,17 +114,27 @@ def main():
     adjacency_list = OrderedDict(sorted(edges.items(), key=lambda t: (get_level(t[0]), t[0])))
 
     sorted_edges = [] 
+    nodes = set()
     for src in adjacency_list:
         for dst in adjacency_list[src]:
             if get_level(src) < get_level(dst):
-                sorted_edges.append({"from": src, "to": dst})
+                # sorted_edges.append({"from": src, "to": dst})
+                sorted_edges.append({"source": src, "target": dst})
+                nodes.add(src)
+                nodes.add(dst)
 
     sorted_edges.sort(key = lambda t: (get_level(t["from"]), get_level(t["to"]), t["from"], t["to"]))
+    sorted_nodes = sorted(list(nodes), key=lambda t: (get_level(t), t))
+
+    json_nodes = [{
+            "id": node,
+            "size": 100 * (4 - get_level(node))
+        } for node in sorted_nodes]
 
     with open("name_mapping.json", "w") as f:
         print(json.dumps(sorted_mapping, indent=4), file=f)
     with open("data.json", "w") as f:
-        print(json.dumps({"edges": sorted_edges}, indent=4), file=f)
+        print(json.dumps({"links": sorted_edges, "nodes": json_nodes}, indent=4), file=f)
 
     ## TODO: Check if R215 Fiber == R215 Core == R215
     ## TODO: What does uplink mean
