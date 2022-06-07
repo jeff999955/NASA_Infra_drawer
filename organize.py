@@ -117,18 +117,18 @@ def main():
     nodes = set()
     for src in adjacency_list:
         for dst in adjacency_list[src]:
-            if get_level(src) < get_level(dst):
+            if get_level(src) < get_level(dst) and get_level(dst) < 4:
                 # sorted_edges.append({"from": src, "to": dst})
                 sorted_edges.append({"source": src, "target": dst})
                 nodes.add(src)
                 nodes.add(dst)
 
-    sorted_edges.sort(key = lambda t: (get_level(t["from"]), get_level(t["to"]), t["from"], t["to"]))
+    sorted_edges.sort(key = lambda t: (get_level(t["source"]), get_level(t["target"]), t["source"], t["target"]))
     sorted_nodes = sorted(list(nodes), key=lambda t: (get_level(t), t))
 
     json_nodes = [{
             "id": node,
-            "size": 100 * (4 - get_level(node))
+            "size": 100 * (5 - get_level(node))
         } for node in sorted_nodes]
 
     with open("name_mapping.json", "w") as f:

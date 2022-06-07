@@ -1,7 +1,7 @@
 module.exports = {
   automaticRearrangeAfterDropNode: true,
   collapsible: true,
-  directed: false,
+  directed: true,
   focusAnimationDuration: 0.75,
   focusZoom: 1,
   freezeAllDragEvents: false,
@@ -21,7 +21,7 @@ module.exports = {
     alphaTarget: 0.05,
     gravity: -250,
     linkLength: 120,
-    linkStrength: 2,
+    linkStrength: 80,
     disableLinkForce: false,
   },
   node: {
@@ -57,7 +57,7 @@ module.exports = {
     opacity: 1,
     renderLabel: false,
     semanticStrokeWidth: true,
-    strokeWidth: 3,
+    strokeWidth: 1,
     markerHeight: 6,
     markerWidth: 6,
     type: "STRAIGHT",
