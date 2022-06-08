@@ -117,7 +117,7 @@ def main():
     nodes = set()
     for src in adjacency_list:
         for dst in adjacency_list[src]:
-            if get_level(src) < get_level(dst) and get_level(dst) < 4:
+            if get_level(src) < get_level(dst) and get_level(dst) < 5:
                 # sorted_edges.append({"from": src, "to": dst})
                 sorted_edges.append({"source": src, "target": dst})
                 nodes.add(src)

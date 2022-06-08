@@ -22,9 +22,11 @@ const SwitchGraph = () => {
     console.log(config.height, config.width);
   };
   useEffect(() => {
+    handleSize();
+    handleClick();
     window.addEventListener("resize", handleSize);
     return () => window.removeEventListener("resize", handleSize)
-  });
+  }, []);
 
   const handleClick = () => {
     fetch(BACKEND_URL).then(

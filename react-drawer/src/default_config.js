@@ -21,7 +21,7 @@ module.exports = {
     alphaTarget: 0.05,
     gravity: -250,
     linkLength: 120,
-    linkStrength: 80,
+    linkStrength: 2,
     disableLinkForce: false,
   },
   node: {

@@ -29,9 +29,9 @@ class DrawerApp extends StatelessWidget {
     }
 
     var builder = SugiyamaConfiguration()
-      ..nodeSeparation = (15)
+      ..nodeSeparation = (30)
       ..levelSeparation = (100)
-      ..orientation = SugiyamaConfiguration.ORIENTATION_TOP_BOTTOM;
+      ..orientation = SugiyamaConfiguration.ORIENTATION_LEFT_RIGHT;
     var algorithm = SugiyamaAlgorithm(builder);
     return MaterialApp(
       title: 'Flutter Demo',
@@ -71,9 +71,9 @@ class _HomePageState extends State<HomePage> {
           widget.graph.removeNode(node);
         }
 
-        var edges = json['edges']; // TODO: type casting would fail
+        var edges = json['links']; // TODO: type casting would fail
         for (var edge in edges) {
-          widget.graph.addEdge(Node.Id(edge['from']), Node.Id(edge['to']),
+          widget.graph.addEdge(Node.Id(edge['source']), Node.Id(edge['target']),
               paint: Paint()..color = Colors.black);
         }
         print(widget.graph.nodes);
